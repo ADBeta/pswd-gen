@@ -1,4 +1,4 @@
-# ArduSERVO
+# pswd-gen
 #### <b> (c) ADBeta 2022 - 2023 </b>
 pswd-gen, formerly PasswordGen was completed originally in October 2021.  
 
