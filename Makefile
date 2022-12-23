@@ -1,20 +1,43 @@
+#Output directories
+SRC_DIR := src
+OBJ_DIR := obj
+BIN_DIR := bin
+
+#TARGET
+TARGET := $(BIN_DIR)/pswd-gen
+
+#Source files
+SRCS := $(wildcard $(SRC_DIR)/*.c)
+#Objects derived from Sources
+OBJS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
+
+#Compiler
 CC := gcc
-CFLAGS := -Wall
-TARGET := passwdGen
-	
+
+#Flags
+CPPFLAGS := -Iinclude -MMD -MP
+CFLAGS   := -Wall
+#LDFLAGS  := -Llib
+LDLIBS   := -lm #/usr/lib/ 
+
 .PHONY: all clean
 
-# $(wildcard *.cpp /xxx/xxx/*.cpp): get all .cpp files from the current directory and dir "/xxx/xxx/"
-SRCS := $(wildcard *.c)
-# Substitute all ".cpp" file name strings to ".o" file name strings
-OBJS := $(patsubst %.c,%.o,$(SRCS))
-
 all: $(TARGET)
-$(TARGET): $(OBJS)
-	$(CC) -o $@ $^
-%.o: %.cpp
-	$(CC) $(CFLAGS) -c $<
 
-# Remove all .o files and target
+#Make binary
+$(TARGET): $(OBJS) | $(BIN_DIR)
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+
+#Make objects
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@ 
+
+#Create obj and bin directory if they don't exist
+$(BIN_DIR) $(OBJ_DIR):
+	mkdir -p $@
+
+#Remove objects and binary
 clean:
-	rm -rf $(TARGET) *.o
+	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR)
+
+-include $(OBJ:.o=.d)

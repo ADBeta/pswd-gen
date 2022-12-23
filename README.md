@@ -1,20 +1,19 @@
-Written by ADBeta.
-Copyright 2021
+# ArduSERVO
+#### <b> (c) ADBeta 2022 - 2023 </b>
+pswd-gen, formerly PasswordGen was completed originally in October 2021.  
 
-Last modified 14 Oct 2021
+This program is designed to be reliable, fast, customisable and RAM secure.  
+As soon as the password has been generated it is cleared from RAM and overwritten.  
 
------------- DISCLAIMER ------------
-passwdGen is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+## Usage
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+## TODO
+* Add exe compile option for makefile.  
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
+## Changelog
+* 1.0.0 - Finished in Oct 2021.  
+* 2.0.0 - Refactor the makefile and codebase.  
 
-
+--------------------------------------------------------------------------------
+This software is under the GPL v3 licence by ADBeta 2022 - 2023. please read the  
+LICENCE file
