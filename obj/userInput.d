@@ -1,5 +1,3 @@
-obj/userInput.o: src/userInput.c include/userInput.h include/passwdGen.h \
- include/passwdGen.h
+obj/userInput.o: src/userInput.c include/userInput.h include/generate.h
 include/userInput.h:
-include/passwdGen.h:
-include/passwdGen.h:
+include/generate.h:

@@ -1,22 +1,16 @@
+#include <stdbool.h>
+
 #ifndef USERINPUT_H
 #define USERINPUT_H
 
-#include "passwdGen.h" //Required for bool type
-
-//Parses user input one string at a time
+/** Get and handle user input *************************************************/
+//Parse the user input one 'word' at a time
 void parse_arguments(int argc, char *argv[]);
 
+//TODO Impliment this
 void sanitizeString(char *);
 
-//Generic error message
-void error_message();
-
-//Help message
-void help_message();
-
-//Warning message
-void warn_insecure(char *);
-
+/** Set the internal variables via command line operands **********************/
 //Sets global length variable using user input
 void set_length(char *);
 
@@ -28,5 +22,13 @@ void set_word(char *);
 
 //Parses user input string to check if it is an option
 bool parse_option(char *);
+
+/** Output message definitions ************************************************/
+//Generic error message
+void error_message();
+//Help message
+void help_message();
+//Warning message
+void warn_insecure(char *);
 
 #endif

@@ -1,14 +1,36 @@
-#include "generate.h"
-#include <stdlib.h> //required for srand and free
-#include <stdio.h> //required for size_t
-#include <string.h> //required for stlen etc
-#include <time.h> //reqired for seed function
+#include <stdbool.h> //Bool type
+#include <stdlib.h> //srand and free
+#include <stdio.h> //size_t
+#include <string.h> //stlen etc
+#include <time.h> //used in seed function
 
 #include <ctype.h> //Not super portable. if breaks, all that is needed is the
 //isupper, islower, isnumber and issymbol functions
 
-#include "passwdGen.h" //required for globals
 #include "userInput.h" //Required for error messages
+#include "generate.h"
+
+
+
+
+
+//Global settings struct and define some vars
+struct Settings g_settings = {
+};
+//Global output string
+char *g_output;
+
+void set_defaults() {
+	if(g_settings.lengthSet == false) {
+		g_settings.length = 16;
+		g_settings.lengthSet = true;
+	}
+	
+	if(g_settings.includeSet == false) {
+		strcpy(g_settings.include, "ulns");
+		g_settings.includeSet = true;
+	}
+}
 
 //Generic function to produce a random output, containing specified chars, of
 //specified length.

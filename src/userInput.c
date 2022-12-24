@@ -1,49 +1,11 @@
-#include "userInput.h" 
-#include "passwdGen.h" //Required for globals
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-//Generic error message for how to use this software
-void error_message() {
-	printf("Usage: pwdgen [OPTION]...\n"
-	"Use psswdgen --help for more information\n");
-	
-	exit(EXIT_FAILURE);
-}
+#include "userInput.h" 
+#include "generate.h"
 
-//Specific message given when user requests help (--help or -h)
-void help_message() {
-	printf("Usage: pwdgen [OPTION]....\n"
-	"Generates a random password according to the options.\n\n"
-	
-	"  length=LEN\t\tset the length of the output (default: 16 | max: 512)\n"
-	
-	"  include=CHARS\t\tspecify which character types to include (default: ulns)\n"
-	"  \t\t\tu=uppercase, l=lowecase, n=numeric, s=symbol.\n"
-	
-	"  word=WORD\t\tspecify a word that you want the password to include at some point in the output.\n"
-	
-	"\n\nExamples:\n"
-	"pwdgen\t\tZ>Q7[m`Fo54<z|om\n"
-	"Generates a 16 length password using all availible characters\n\n"
-	
-	"pwdgen include=ul length=16\t\tKcoUmjeHLYbEcOxG\n"
-	"Generates a 16 long password including only Uppercase and Lowercase characters\n\n"
-	
-	"pwdgen word=example length=16\t\t$,I@LQexample._;\n"
-	"Generates a 16 character long password including the word \"example\", using all availible characters\n"
-	);
-	
-		exit(EXIT_SUCCESS);
-}
-
-void warn_insecure(char *warningMsg) {
-	printf("Warning: %s, doing this may cause\n"
-	"this password to be weak or insecure. Please excesise caution using it.\n"
-	, warningMsg);
-}
-
+/** Set the internal variables via command line operands **********************/
 //Sets global length variable using user input
 void set_length(char *operand) {
 	//Exit if string given is larger than expected
@@ -84,7 +46,7 @@ void set_include(char *operand) {
 		error_message();
 	}
 	
-	//Set the include string to all disabled before changing
+	//Set the include string to all disabled, so there is a blank slate.
 	strcpy(g_settings.include, "----");
 	
 	int cc = 0; //Current char
@@ -136,6 +98,47 @@ void set_word(char *operand) {
 	strcpy(g_settings.word, operand);
 	
 	g_settings.wordSet = true;	
+}
+
+/** Parse user input from the execution args **********************************/
+//Parses user input string to check if it is an argument
+void parse_arguments(int argc, char *argv[]) {
+/*	Possible failures:
+	no arguments given.
+	mismatching arguments:
+	unknown command
+*/	
+	//If no arguments given, escape without doing checks
+	if(argc == 0) {
+		printf("Using default options.\n");
+		return;
+	}
+	
+	int argp = 0; //Argument pointer
+	/* run through all arguments */
+	while(argp < argc) {
+		//Escape if input string is over 64 chars long
+		if(strlen(argv[argp]) > 64) {
+			printf("Argument too long.\n");
+			error_message();
+		}
+		
+		//completely override everything else if help is requested
+		if(strcmp(argv[argp], "--help") == 0)
+			help_message();
+		
+		//Parse for options 
+		bool isOption = parse_option(argv[argp]);
+		
+		//If current input isn't recognised, exit
+		if(isOption == false) {
+			printf("Unrecognised input: %s.\n", argv[argp]);	
+			error_message();
+		}
+		
+		//Continue through loop
+		++argp;
+	}
 }
 
 //Parses user input string to check if it is an option
@@ -230,42 +233,43 @@ bool parse_option(char *input) {
 	return isOption;
 }
 
-//Parses user input string to check if it is an argument
-void parse_arguments(int argc, char *argv[]) {
-/*	Possible failures:
-	no arguments given.
-	mismatching arguments:
-	unknown command
-*/	
-	//If no arguments given, escape without doing checks
-	if(argc == 0) {
-		printf("Using default options.\n");
-		return;
-	}
+/** Output Messages ***********************************************************/
+//Generic error message for how to use this software
+void error_message() {
+	printf("Usage: pwdgen [OPTION]...\n"
+	"Use psswdgen --help for more information\n");
 	
-	int argp = 0; //Argument pointer
-	/* run through all arguments */
-	while(argp < argc) {
-		//Escape if input string is over 64 chars long
-		if(strlen(argv[argp]) > 64) {
-			printf("Argument too long.\n");
-			error_message();
-		}
-		
-		//completely override everything else if help is requested
-		if(strcmp(argv[argp], "--help") == 0)
-			help_message();
-		
-		//Parse for options 
-		bool isOption = parse_option(argv[argp]);
-		
-		//If current input isn't recognised, exit
-		if(isOption == false) {
-			printf("Unrecognised input: %s.\n", argv[argp]);	
-			error_message();
-		}
-		
-		//Continue through loop
-		++argp;
-	}
+	exit(EXIT_FAILURE);
+}
+
+//Message given when user requests help (--help or -h)
+void help_message() {
+	printf("Usage: pwdgen [OPTION]....\n"
+	"Generates a random password according to the options.\n\n"
+	
+	"  length=LEN\t\tset the length of the output (default: 16 | max: 512)\n"
+	
+	"  include=CHARS\t\tspecify which character types to include (default: ulns)\n"
+	"  \t\t\tu=uppercase, l=lowecase, n=numeric, s=symbol.\n"
+	
+	"  word=WORD\t\tspecify a word that you want the password to include at some point in the output.\n"
+	
+	"\n\nExamples:\n"
+	"pwdgen\t\tZ>Q7[m`Fo54<z|om\n"
+	"Generates a 16 length password using all availible characters\n\n"
+	
+	"pwdgen include=ul length=16\t\tKcoUmjeHLYbEcOxG\n"
+	"Generates a 16 long password including only Uppercase and Lowercase characters\n\n"
+	
+	"pwdgen word=example length=16\t\t$,I@LQexample._;\n"
+	"Generates a 16 character long password including the word \"example\", using all availible characters\n"
+	);
+	
+		exit(EXIT_SUCCESS);
+}
+
+void warn_insecure(char *warningMsg) {
+	printf("Warning: %s, doing this may cause\n"
+	"this password to be weak or insecure. Please use caution.\n"
+	, warningMsg);
 }
